@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="web3.min.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>连接MetaMask钱包</h1>
+    <button onclick="connectWallet()">Connect to Metamask</button>
+    <div>
+        <h2>钱包信息</h2>
+        <p id="accountAddress">Account Address: </p>
+        <p id="accountBalance">Account Balance: </p>
+    </div>
+
+    <script>
+        async function connectWallet() {
+            if (window.ethereum) {
+                try {
+                    console.log("ok");
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });//请求用户授权连接到Metamask钱包
+                    const web3 = new Web3(window.ethereum);//获取Web3实例
+                    const accounts = await web3.eth.getAccounts(); // 获取当前账户地址
+                    console.log(accounts);
+                    const accountAddress = accounts[0];
+                    const balance = await web3.eth.getBalance(accountAddress); // 获取当前账户余额
+                    console.log(balance);
+                    // 更新页面上的信息
+                    document.getElementById('accountAddress').textContent = `Account Address: ${accountAddress}`;
+                    document.getElementById('accountBalance').textContent = `Account Balance: ${web3.utils.fromWei(balance, 'ether')} ETH`;
+                } catch (error) {
+                    console.error(error);
+                }
+            } else {
+                alert('Metamask is not installed. Please install it and try again.');
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>
